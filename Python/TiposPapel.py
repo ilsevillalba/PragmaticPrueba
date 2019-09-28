@@ -4,6 +4,7 @@ def precioPapel(TipoPapel):
     if TipoPapel== 1:
         papel="Bond"
         precio=500
+         
         
     elif TipoPapel== 2:
         papel="Opalina"
@@ -13,4 +14,8 @@ def precioPapel(TipoPapel):
         papel="Propalcote"
         precio=2000
 
-    return precio
+    #pasando el precio de metro cuadrado a pulg cuadrada
+
+    precioPapelPulg=precio/1550
+
+    return precioPapelPulg

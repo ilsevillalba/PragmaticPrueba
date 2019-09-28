@@ -6,11 +6,14 @@ from tkinter import *
 from tkinter import ttk
 import TiposPapel
 import TiposMaquinas
+import CostoImpresion
+from tkinter import messagebox
 
 global contador
 contador=0
-
+tacha=0
 cotizaciones={}
+
 
 def duplicarcampo():
     global contador
@@ -22,23 +25,39 @@ def duplicarcampo():
     cotizaciones[contador]=variableCotizacion
 
 def Calcular():
+    global tacha
+    
     Nombre = variableNombre.get()
-    Tintas = variableTintas.get()
-    Ancho = variableAncho.get()
-    Largo = variableLargo.get()
-    TipoImpresion= variableTipoImpresion.get()
+    Tintas = int(variableTintas.get())
+    Ancho = float (variableAncho.get())
+    Largo = float (variableLargo.get())
+    TipoImpresion= int(variableTipoImpresion.get())
     TipoPapel = variableTipoPapel.get()
     Maquina = variableMaquina.get()
-    Desperdicio = variableDesperdicio.get()
-    Utilidad = variableUtilidad.get()
+    Desperdicio = float(variableDesperdicio.get())/100
+    Utilidad = float(variableUtilidad.get())/100
+
+    precio_papel=TiposPapel.precioPapel(TipoPapel)
+
+    mensaje=('Cliente: '+ Nombre + "\n" +'Cantidad de tintas: '+ str(Tintas) +"\n"+ 'Tamaño de etiqueta: '+ str(Ancho) +'x'+ str(Largo)+'mm'+"\n"+"\n")
 
 
     for i in cotizaciones:
-        cantidadEtiquetas=cotizaciones[i].get()
+        cantidadEtiquetas=int (cotizaciones[i].get())
+        tiempo_impresion=TiposMaquinas.tiempoImpresion(Ancho,Largo,cantidadEtiquetas,Maquina)
+        costo_impresion= CostoImpresion.costoImpresion (TipoImpresion,Ancho,Largo,cantidadEtiquetas,precio_papel,tiempo_impresion,Desperdicio,Tintas,Maquina)
+        
 
-    precio_papel=TiposPapel.precioPapel(TipoPapel)
-    tiempo_impresion=TiposMaquinas.tiempoImpresion(Ancho,Largo,cantidadEtiquetas,Maquina)
-    print(tiempo_impresion)
+        mensaje=mensaje+"\n"+'Cotizacion'+str(i)+"\n"+('Cantidad de etiquetas: '+str(cantidadEtiquetas)+"\n"+'Precio de etiquetas: '+str(round(costo_impresion))+"\n")
+        
+
+    messagebox.showinfo('Cliente: ',mensaje)
+        
+       # ,'Tamaño de etiqueta: ',Ancho,'x',Largo,'Cantidad de tintas',Tintas,'Precio de etiquetas',costo_impresion)
+ 
+
+
+    
 
 
     
@@ -94,4 +113,8 @@ botonAgregar = Label(ventanaPrincipal, text="Agregar cotizacion").grid(row=9,col
 Button(ventanaPrincipal, text="+", command=duplicarcampo).grid(row=9,column=1)
 
 Button(ventanaPrincipal, text="Calcular", command=Calcular).grid(row=(9),column=2)
+
+
+ 
+
 ventanaPrincipal.mainloop()
